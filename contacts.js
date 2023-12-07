@@ -17,22 +17,14 @@ async function getContactById(contactId) {
 }
 
 async function removeContact(contactId) {
-  return await listContacts().then(contacts => {
-    const updatedContacts = contacts.filter(
-      contact => contact.id !== contactId
-    );
-    return fs
-      .writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2))
-      .then(() => contacts.find(contact => contact.id === contactId) || null);
-  });
-  //   const users = await listContacts();
-  //   const id = contactId;
-  //   const idx = users.findIndex(user => user.id === id);
-  //   if (idx === -1) {
-  //     console.log(`User with ID ${id} not found`);
-  //     return false;
-  //   }
-  //   users.splice(idx, 1);
+  const contacts = await listContacts();
+  const newContacts = contacts.filter(({ id }) => id !== contactId);
+  try {
+    await fs.writeFile(contactsPath, JSON.stringify(newContacts));
+    console.log(`Contact with id=${contactId} was removed`);
+  } catch (err) {
+    console.log(err.message);
+  }
 }
 
 async function addContact(name, email, phone) {
