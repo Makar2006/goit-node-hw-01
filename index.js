@@ -9,22 +9,22 @@ const {
   addContact,
 } = require('./contacts');
 
-async function invokeAction({ action, id, name, email, phone }) {
+function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
     case 'list':
-      await listContacts().then(console.log);
+      listContacts().then(console.log);
       break;
 
     case 'get':
-      await getContactById(id).then(console.log);
+      getContactById(id).then(console.log);
       break;
 
     case 'add':
-      await addContact(name, email, phone).then(console.log);
+      addContact(name, email, phone).then(console.log);
       break;
 
     case 'remove':
-      await removeContact(id).then(console.log);
+      removeContact(id).then(console.log);
       break;
 
     default:

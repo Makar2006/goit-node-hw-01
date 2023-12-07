@@ -3,15 +3,15 @@ const path = require('path');
 const fs = require('fs').promises;
 const contactsPath = path.join(__dirname, 'db', 'contacts.json');
 
-async function listContacts() {
-  return await fs
+function listContacts() {
+  return fs
     .readFile(contactsPath)
     .then(data => JSON.parse(data))
     .catch(error => []);
 }
 
-async function getContactById(contactId) {
-  return await listContacts().then(
+function getContactById(contactId) {
+  return listContacts().then(
     contacts => contacts.find(contact => contact.id === contactId) || null
   );
 }
@@ -27,8 +27,8 @@ async function removeContact(contactId) {
   }
 }
 
-async function addContact(name, email, phone) {
-  return await listContacts().then(contacts => {
+function addContact(name, email, phone) {
+  return listContacts().then(contacts => {
     const newContact = { id: Date.now(), name, email, phone };
     const updatedContacts = [...contacts, newContact];
     return fs
