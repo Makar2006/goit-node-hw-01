@@ -10,31 +10,37 @@ function listContacts() {
     .catch(error => []);
 }
 
-function getContactById(contactId) {
-  return listContacts().then(
-    contacts => contacts.find(contact => contact.id === contactId) || null
-  );
+async function getContactById(contactId) {
+  const contacts = await listContacts();
+  const contact = contacts.find(({ id }) => id === contactId);
+  if (!contact) {
+    return null;
+  }
+  return contact;
 }
 
 async function removeContact(contactId) {
   const contacts = await listContacts();
-  const newContacts = contacts.filter(({ id }) => id !== contactId);
+  const deletedContacts = contacts.filter(({ id }) => id !== contactId);
   try {
-    await fs.writeFile(contactsPath, JSON.stringify(newContacts));
+    await fs.writeFile(contactsPath, JSON.stringify(deletedContacts));
     console.log(`Contact with id=${contactId} was removed`);
   } catch (err) {
     console.log(err.message);
   }
 }
 
-function addContact(name, email, phone) {
-  return listContacts().then(contacts => {
-    const newContact = { id: Date.now(), name, email, phone };
-    const updatedContacts = [...contacts, newContact];
-    return fs
-      .writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2))
-      .then(() => newContact);
-  });
+async function addContact(name, email, phone) {
+  const contacts = await listContacts();
+  const newContact = {
+    id: Date.now(),
+    name,
+    email,
+    phone,
+  };
+  contacts.push(newContact);
+  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+  return newContact;
 }
 
 module.exports = { listContacts, getContactById, removeContact, addContact };
