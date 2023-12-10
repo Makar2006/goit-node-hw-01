@@ -9,27 +9,31 @@ const {
   addContact,
 } = require('./contacts');
 
-function invokeAction({ action, id, name, email, phone }) {
+const invokeAction = async ({ action, id, name, email, phone }) => {
   switch (action) {
     case 'list':
-      listContacts().then(console.log);
+      const contactsList = await listContacts();
+      console.table(contactsList);
       break;
 
     case 'get':
-      getContactById(id).then(console.log);
+      const getContact = await getContactById(id);
+      console.table(getContact);
       break;
 
     case 'add':
-      addContact(name, email, phone).then(console.log);
+      const newContact = await addContact({ name, email, phone });
+      console.table(newContact);
       break;
 
     case 'remove':
-      removeContact(id).then(console.log);
+      const deleteContact = await removeContact(id);
+      console.table(deleteContact);
       break;
 
     default:
       console.warn('\x1B[31m Unknown action type!');
   }
-}
+};
 
 invokeAction(argv);
